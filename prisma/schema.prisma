@@ -1,16 +1,107 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-mo
+model Vendedor {
+  id              Int      @id @default(autoincrement())
+  nome            String   @db.VarChar(100)
+  cpf             String   @db.VarChar(14)
+  email           String   @db.VarChar(80)
+  senhaHash       String   @db.VarChar(255)
+  telefone        String   @db.VarChar(20)
+  dataCadastro    DateTime @default(now())
+  
+  vendas          Venda[]
+
+  @@map("vendedores")
+}
+
+model Categoria {
+  id            Int       @id @default(autoincrement())
+  nomeCategoria String    @db.VarChar(100)
+  descricao     String?   @db.VarChar(255)
+  
+  produtos      Produto[]
+
+  @@map("categorias")
+}
+
+model Produto {
+  id          Int      @id @default(autoincrement())
+  codigo      String   @map("código") @db.VarChar(20)
+  nomeProduto String   @db.VarChar(100)
+  preco       Decimal  @db.Decimal(10, 2)
+  
+  categoriaId Int
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  
+  estoque String @db.VarChar(100)
+
+  itensVenda  ItemVenda[]
+
+  @@map("produtos")
+}
+
+
+model Cliente {
+  id           Int      @id @default(autoincrement())
+  nomeCliente  String   @db.VarChar(100)
+  cpf          String   @db.VarChar(14)
+  telefone     String   @db.VarChar(20)
+  email        String   @db.VarChar(80)
+  dataCadastro DateTime @db.Date
+
+  vendas       Venda[]
+
+  @@map("clientes")
+}
+
+model FormaPagamento {
+  id     Int     @id @default(autoincrement())
+  nome   String  @unique @db.VarChar(30)
+  vendas Venda[]
+
+  @@map("formaPagamento")
+}
+
+model Venda {
+  id                Int            @id @default(autoincrement())
+  valorTotalBruto   Decimal        @db.Decimal(10, 2)
+  descontoAplicado  Decimal        @default(0.00) @db.Decimal(10, 2)
+  valorTotalLiquido Decimal        @db.Decimal(10, 2)
+  cpfNotaFiscal     String?        @db.VarChar(14)
+  dataHoraVenda     DateTime       @default(now())
+
+  vendedorId        Int
+  vendedor          Vendedor       @relation(fields: [vendedorId], references: [id])
+  
+  clienteId         Int?
+  cliente           Cliente?       @relation(fields: [clienteId], references: [id])
+  
+  formaPagamentoId  Int
+  formaPagamento    FormaPagamento @relation(fields: [formaPagamentoId], references: [id])
+
+  itens             ItemVenda[]
+
+  @@map("vendas")
+}
+
+model ItemVenda {
+  id            Int     @id @default(autoincrement())
+  quantidade    Decimal @db.Decimal(10, 3)
+  precoUnitario Decimal @db.Decimal(10, 2)
+  subtotal      Decimal @db.Decimal(10, 2)
+
+  vendaId       Int
+  venda         Venda   @relation(fields: [vendaId], references: [id])
+
+  produtoId     Int
+  produto       Produto @relation(fields: [produtoId], references: [id])
+
+  @@map("itensVenda")
+}
