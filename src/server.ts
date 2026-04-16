@@ -1,7 +1,7 @@
 import express from 'express';
 import produtosRoutes from './routes/produtosRoutes';
 import vendedorRoutes from './routes/vendedorRoutes';
-
+import vendasRoutes from './routes/vendasRoutes';
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.get('/status', (req, res) => {
 
 app.use(produtosRoutes);
 app.use(vendedorRoutes);
-
+app.use(vendasRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
