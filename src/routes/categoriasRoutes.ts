@@ -155,8 +155,6 @@ route.delete('/produtos/:id', async (req, res) => {
             message: "A aplicação não conseguiu conectar com o servidor"
         });
     }
-
-
     
 })
 
