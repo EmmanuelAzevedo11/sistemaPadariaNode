@@ -27,9 +27,9 @@ export const buscarProdutos = async () => {
     return listaProdutos;
 }
 
-export const criarProduto = async (nomeProduto: string,codigo: string, preco: number, categoriaId: number, estoque: number) => {
+export const criarProduto = async (nomeProduto: string,codigo: string, preco: number, categoriaId: number, estoque: string) => {
 
-    if(!nomeProduto && !codigo && !preco  && !categoriaId && !estoque){
+    if(!nomeProduto || !codigo || !preco  || !categoriaId || !estoque){
         throw new Error("Falta um parâmetro para a criação de produto");
     }
 
