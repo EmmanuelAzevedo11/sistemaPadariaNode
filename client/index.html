@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sistema de gerenciamento da padaria — controle de produtos, vendas e vendedores." />
+  <title>Padaria | Sistema de Gestão</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- ── Sidebar ─────────────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar__logo">
+        <span class="sidebar__logo-icon">🍞</span>
+        <div>
+          <div class="sidebar__logo-text">Padaria</div>
+          <div class="sidebar__logo-sub">Sistema de Gestão</div>
+        </div>
+      </div>
+
+      <nav id="sidebar-nav">
+        <button class="nav__item" data-view="dashboard">
+          <span class="nav__icon">🏠</span> Dashboard
+        </button>
+        <button class="nav__item" data-view="produtos">
+          <span class="nav__icon">📦</span> Produtos
+        </button>
+      </nav>
+
+      <div class="sidebar__footer">v1.0.0</div>
+    </aside>
+
+    <!-- ── Main Content ─────────────────────────────────────────── -->
+    <main class="main-wrapper">
+      <div id="main-content">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ── Modal ──────────────────────────────────────────────────── -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modal-title"></h2>
+        <button class="modal__close" id="btn-close-modal" aria-label="Fechar modal">✕</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ── Toast Notifications ────────────────────────────────────── -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ── App Entry Point ────────────────────────────────────────── -->
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>

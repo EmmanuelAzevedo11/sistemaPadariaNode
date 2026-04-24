@@ -1,0 +1,14 @@
+{
+  "name": "bakery-system",
+  "version": "1.0.0",
+  "description": "Sistema de Padaria - Root",
+  "scripts": {
+    "setup": "npm install --prefix api",
+    "api": "npm run dev --prefix api",
+    "front": "npx serve client -p 5000",
+    "dev": "npx concurrently \"npm run api\" \"npm run front\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
