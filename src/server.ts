@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import produtosRoutes from './routes/produtosRoutes';
 import vendedorRoutes from './routes/vendedorRoutes';
 import vendasRoutes from './routes/vendasRoutes';
@@ -7,6 +8,13 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import { title } from 'node:process';
 
 const app = express();
+const PORT = 3000;
+
+app.use(cors({
+  origin: `http://localhost:${PORT}`,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Isso permite que a API receba dados em formato JSON
 app.use(express.json());
@@ -113,7 +121,6 @@ app.use(produtosRoutes);
 app.use(vendedorRoutes);
 app.use(vendasRoutes);
 
-const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🍞 Servidor rodando em http://localhost:${PORT}`);
 });
