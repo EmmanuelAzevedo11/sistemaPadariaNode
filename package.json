@@ -1,33 +1,14 @@
 {
-  "name": "padaria-api",
+  "name": "bakery-system",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Sistema de Padaria - Root",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "dotenv": "^17.4.2",
-    "ejs": "^5.0.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "setup": "npm install --prefix api",
+    "api": "npm run dev --prefix api",
+    "front": "npx serve client -p 5000",
+    "dev": "npx concurrently \"npm run api\" \"npm run front\""
   },
   "devDependencies": {
-    "@prisma/client": "^6.19.3",
-    "@types/bcrypt": "^6.0.0",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^25.6.0",
-    "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.8",
-    "prisma": "^6.19.3",
-    "tsx": "^4.21.0"
+    "concurrently": "^9.1.2"
   }
 }
