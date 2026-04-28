@@ -59,7 +59,7 @@ function openCreateProduto() {
       await ProdutosAPI.create(formData);
       closeModal();
       showToast('Produto criado com sucesso!');
-      setTimeout(() => window.location.reload(), 1000);
+      await loadProdutos();
     } catch (err) {
       showToast(`Erro: ${err.message}`, 'error');
     }
@@ -75,7 +75,7 @@ function openEditProduto(id, produtos) {
       await ProdutosAPI.update(id, formData);
       closeModal();
       showToast('Produto atualizado com sucesso!');
-      setTimeout(() => window.location.reload(), 1000);
+      await loadProdutos();
     } catch (err) {
       showToast(`Erro: ${err.message}`, 'error');
     }
@@ -87,7 +87,7 @@ async function deleteProduto(id) {
   try {
     await ProdutosAPI.delete(id);
     showToast('Produto excluído com sucesso!');
-    setTimeout(() => window.location.reload(), 1000);
+    await loadProdutos();
   } catch (err) {
     showToast(`Erro: ${err.message}`, 'error');
   }
