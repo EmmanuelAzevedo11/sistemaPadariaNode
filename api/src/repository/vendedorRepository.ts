@@ -25,7 +25,7 @@ export const buscarVendedorPorId = async (id: number) => {
     return vendedor;
 }
 
-export const criarVendedor = async (nome: string, cpf: string, email: string, senhaHash, telefone: string, dataCadastro: Date) => {
+export const criarVendedor = async (nome: string, cpf: string, email: string, senhaHash: string, telefone: string, dataCadastro: string | Date) => {
 
     if(!nome && !cpf && !email && !senhaHash && !telefone && !dataCadastro){
         throw new Error('Dados não estão corretos');
@@ -38,7 +38,7 @@ export const criarVendedor = async (nome: string, cpf: string, email: string, se
             email: email,
             senhaHash: senhaHash, 
             telefone: telefone,
-            dataCadastro
+            dataCadastro: new Date(dataCadastro)
         }
     });
 
@@ -67,7 +67,7 @@ export const updateVendedor = async (id: number, dados: any) => {
             email : email,
             senhaHash: senhaHash,
             telefone: telefone,
-            dataCadastro: dataCadastro
+            dataCadastro: dataCadastro ? new Date(dataCadastro) : undefined
         } 
     });
 
