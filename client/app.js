@@ -1,20 +1,23 @@
-import { ProdutosAPI, StatusAPI } from './src/api.js';
-import {
-  setActiveNav,
-  renderLoading,
-  renderError,
-  renderDashboard,
-  renderProdutos,
-  renderProdutoForm,
-  closeModal,
-} from './src/ui.js';
-import { showToast } from './src/utils.js';
+import { setActiveNav, renderLoading } from './src/views/shared/layout.js';
+import { closeModal } from './src/views/shared/modal.js';
+
+// ─── Views ──────────────────────────────────────────────────────────────────
+import { loadDashboard } from './src/views/dashboard/dashboardView.js';
+import { loadProdutos } from './src/views/produtos/produtosView.js';
+import { loadVendas } from './src/views/vendas/vendasView.js';
+import { loadVendedores } from './src/views/vendedores/vendedoresView.js';
+import { loadCategorias } from './src/views/categorias/categoriasView.js';
+import { loadClientes } from './src/views/clientes/clientesView.js';
 
 // ─── Router ─────────────────────────────────────────────────────────────────
 
 const routes = {
   dashboard: loadDashboard,
   produtos: loadProdutos,
+  vendas: loadVendas,
+  vendedores: loadVendedores,
+  categorias: loadCategorias,
+  clientes: loadClientes,
 };
 
 async function navigate(view) {
@@ -23,74 +26,6 @@ async function navigate(view) {
   renderLoading();
   const handler = routes[view];
   if (handler) await handler();
-}
-
-// ─── Views ──────────────────────────────────────────────────────────────────
-
-async function loadDashboard() {
-  try {
-    await StatusAPI.check();
-    renderDashboard({ apiOnline: true });
-  } catch {
-    renderDashboard({ apiOnline: false });
-  }
-}
-
-async function loadProdutos() {
-  try {
-    const data = await ProdutosAPI.getAll();
-    // API returns array or a message object when empty
-    const produtos = Array.isArray(data) ? data : [];
-    renderProdutos(produtos, {
-      onCreate: () => openCreateProduto(),
-      onEdit: (id) => openEditProduto(id, produtos),
-      onDelete: (id) => deleteProduto(id),
-    });
-  } catch (err) {
-    renderError(`Erro ao carregar produtos: ${err.message}`);
-  }
-}
-
-// ─── Produto Actions ─────────────────────────────────────────────────────────
-
-function openCreateProduto() {
-  renderProdutoForm(null, async (formData) => {
-    try {
-      await ProdutosAPI.create(formData);
-      closeModal();
-      showToast('Produto criado com sucesso!');
-      await loadProdutos();
-    } catch (err) {
-      showToast(`Erro: ${err.message}`, 'error');
-    }
-  });
-}
-
-function openEditProduto(id, produtos) {
-  const produto = produtos.find((p) => p.id === id);
-  if (!produto) return;
-
-  renderProdutoForm(produto, async (formData) => {
-    try {
-      await ProdutosAPI.update(id, formData);
-      closeModal();
-      showToast('Produto atualizado com sucesso!');
-      await loadProdutos();
-    } catch (err) {
-      showToast(`Erro: ${err.message}`, 'error');
-    }
-  });
-}
-
-async function deleteProduto(id) {
-  if (!confirm('Tem certeza que deseja excluir este produto?')) return;
-  try {
-    await ProdutosAPI.delete(id);
-    showToast('Produto excluído com sucesso!');
-    await loadProdutos();
-  } catch (err) {
-    showToast(`Erro: ${err.message}`, 'error');
-  }
 }
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
