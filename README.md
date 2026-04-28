@@ -40,7 +40,7 @@ Para iniciar tanto o **Backend (API)** quanto o **Frontend (Cliente)** ao mesmo 
 npm run dev
 ```
 
-*   **Frontend**: Acesse `http://localhost:5000`
+*   **Frontend**: Acesse `http://localhost:5500`
 *   **API**: Rodando em `http://localhost:3000`
 
 ---

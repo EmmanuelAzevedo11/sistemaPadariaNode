@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "npm install --prefix api",
     "api": "npm run dev --prefix api",
-    "front": "npx serve client -p 5000",
+    "front": "npx serve client -l 5500 --no-port-switching",
     "dev": "npx concurrently \"npm run api\" \"npm run front\""
   },
   "devDependencies": {
