@@ -6,6 +6,10 @@ import vendasRoutes from './routes/vendasRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { title } from 'node:process';
+import clientesRoutes from './routes/clientesRoutes';
+import categoriasRoutes from './routes/categoriasRoutes';
+import formaPagamentoRoutes from './routes/formaPagamentoRoutes';
+import itemVendaRoutes from './routes/itemVendaRoutes';
 
 const app = express();
 const PORT = 3000;
@@ -120,6 +124,10 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(produtosRoutes);
 app.use(vendedorRoutes);
 app.use(vendasRoutes);
+app.use(clientesRoutes);
+app.use(categoriasRoutes);
+app.use(formaPagamentoRoutes);
+app.use(itemVendaRoutes);
 
 app.listen(PORT, () => {
   console.log(`🍞 Servidor rodando em http://localhost:${PORT}`);
