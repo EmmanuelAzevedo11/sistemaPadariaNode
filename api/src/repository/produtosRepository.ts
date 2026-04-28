@@ -21,7 +21,8 @@ export const buscarProdutos = async () => {
     const listaProdutos = await prisma.produto.findMany();
 
     if(listaProdutos.length == 0 ){
-        throw new Error("Não há produtos cadastrados ainda");
+        // throw new Error("Não há produtos cadastrados ainda");
+        return [];
     }
 
     return listaProdutos;

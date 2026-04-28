@@ -5,7 +5,8 @@ export const buscarVendas = async () => {
     const listaVendas = await prisma.venda.findMany();
 
     if(listaVendas.length === 0 ){
-        throw new Error("Não existe vendas ainda");
+        // throw new Error("Não existe vendas ainda");
+        return [];
     }
 
     return listaVendas;

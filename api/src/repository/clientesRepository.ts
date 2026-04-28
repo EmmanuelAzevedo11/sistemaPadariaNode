@@ -4,7 +4,8 @@ export const buscarClientes = async () => {
     const listaClientes = await prisma.cliente.findMany();
 
     if(listaClientes.length === 0 ){
-        throw new Error("Não há clientes cadastrados ainda");
+        // throw new Error("Não há clientes cadastrados ainda");
+        return [];
     }
 
     return listaClientes;

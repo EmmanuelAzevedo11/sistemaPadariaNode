@@ -4,8 +4,9 @@ export const buscarVedendores = async () => {
     const listaVendedores = await prisma.vendedor.findMany();
 
     if(listaVendedores.length === 0){
-        throw new Error("Não há vendedores cadastrados ainda");
-    };
+        // throw new Error("Não há vendedores cadastrados ainda");
+        return [];
+    }
 
     return listaVendedores;
 }
