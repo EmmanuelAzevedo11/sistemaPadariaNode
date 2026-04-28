@@ -4,7 +4,8 @@ export const buscarClientes = async () => {
     const listaClientes = await prisma.cliente.findMany();
 
     if(listaClientes.length === 0 ){
-        throw new Error("Não há clientes cadastrados ainda");
+        // throw new Error("Não há clientes cadastrados ainda");
+        return [];
     }
 
     return listaClientes;
@@ -24,7 +25,7 @@ export const buscarClientesPorId = async (id: number) => {
     return cliente;
 }
 
-export const adicionarCliente = async (nomeCliente: string, cpf: string, email: string, dataCadastro: Date, telefone?: string) => {
+export const adicionarCliente = async (nomeCliente: string, cpf: string, email: string, dataCadastro: string | Date, telefone?: string) => {
     
     if(!nomeCliente || !cpf || !email || !dataCadastro){
         throw new Error("Dados inseridos incorretamente");
@@ -35,7 +36,7 @@ export const adicionarCliente = async (nomeCliente: string, cpf: string, email: 
             nomeCliente: nomeCliente,
             cpf: cpf,
             email: email,
-            dataCadastro: dataCadastro,
+            dataCadastro: new Date(dataCadastro),
             telefone: telefone ?? ''
         }
     });
@@ -62,7 +63,7 @@ export const updateCliente = async (id: number, dados: any) => {
             nomeCliente: nomeCliente,
             cpf: cpf,
             email: email,
-            dataCadastro: dataCadastro,
+            dataCadastro: dataCadastro ? new Date(dataCadastro) : undefined,
             telefone: telefone ?? ''
         }
     });

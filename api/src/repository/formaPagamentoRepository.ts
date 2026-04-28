@@ -5,7 +5,8 @@ export const buscarTodasFormasDePagamento = async () => {
     const lista = await prisma.formaPagamento.findMany();
 
     if (lista.length === 0) {
-        throw new Error("Não há formas de pagamento cadastradas ainda.");
+        // throw new Error("Não há formas de pagamento cadastradas ainda.");
+        return [];
     }
 
     return lista;

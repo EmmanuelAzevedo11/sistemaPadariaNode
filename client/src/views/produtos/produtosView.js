@@ -1,81 +1,16 @@
-import { formatCurrency, truncate } from './utils.js';
+import { ProdutosAPI } from '../../api/index.js';
+import { openModal, closeModal } from '../shared/modal.js';
+import { renderError } from '../shared/layout.js';
+import { formatCurrency, truncate, showToast } from '../../utils.js';
 
-// ─── Sidebar Navigation ─────────────────────────────────────────────────────
-
-/**
- * Sets the active navigation item in the sidebar.
- * @param {string} activeId - The ID of the nav item to mark as active.
- */
-export function setActiveNav(activeId) {
-  document.querySelectorAll('.nav__item').forEach((item) => {
-    item.classList.toggle('nav__item--active', item.dataset.view === activeId);
-  });
-}
-
-// ─── Main Content Area ──────────────────────────────────────────────────────
-
-/**
- * Renders a loading spinner inside the main content area.
- */
-export function renderLoading() {
-  const main = document.getElementById('main-content');
-  main.innerHTML = `
-    <div class="loading">
-      <div class="spinner"></div>
-      <p>Carregando...</p>
-    </div>
-  `;
-}
-
-/**
- * Renders an error message inside the main content area.
- * @param {string} message
- */
-export function renderError(message) {
-  const main = document.getElementById('main-content');
-  main.innerHTML = `
-    <div class="empty-state">
-      <span class="empty-state__icon">⚠️</span>
-      <p>${message}</p>
-    </div>
-  `;
-}
-
-// ─── Dashboard ──────────────────────────────────────────────────────────────
-
-/**
- * Renders the dashboard view.
- * @param {{ apiOnline: boolean }} data
- */
-export function renderDashboard({ apiOnline }) {
-  const main = document.getElementById('main-content');
-  main.innerHTML = `
-    <div class="page-header">
-      <h1 class="page-title">Dashboard</h1>
-      <p class="page-subtitle">Bem-vindo ao Sistema da Padaria 🍞</p>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <span class="stat-card__icon">🟢</span>
-        <div class="stat-card__info">
-          <span class="stat-card__label">Status da API</span>
-          <span class="stat-card__value ${apiOnline ? 'text--success' : 'text--error'}">
-            ${apiOnline ? 'Online' : 'Offline'}
-          </span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// ─── Produtos ───────────────────────────────────────────────────────────────
+// ─── Render ─────────────────────────────────────────────────────────────────
 
 /**
  * Renders the product list view.
  * @param {Array} produtos
  * @param {{ onEdit: Function, onDelete: Function, onCreate: Function }} callbacks
  */
-export function renderProdutos(produtos, { onEdit, onDelete, onCreate }) {
+function renderProdutos(produtos, { onEdit, onDelete, onCreate }) {
   const main = document.getElementById('main-content');
 
   const rows = produtos.map(
@@ -144,32 +79,14 @@ export function renderProdutos(produtos, { onEdit, onDelete, onCreate }) {
   });
 }
 
-// ─── Modal ──────────────────────────────────────────────────────────────────
-
-/**
- * Opens a generic modal with a title and HTML content.
- * @param {string} title
- * @param {string} bodyHtml
- */
-export function openModal(title, bodyHtml) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').innerHTML = bodyHtml;
-  document.getElementById('modal-overlay').classList.add('modal--open');
-}
-
-/**
- * Closes the open modal.
- */
-export function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('modal--open');
-}
+// ─── Form ───────────────────────────────────────────────────────────────────
 
 /**
  * Renders the product form inside a modal.
  * @param {object|null} produto - Existing product data for editing, or null for creation.
  * @param {Function} onSubmit - Called with the form data object on submission.
  */
-export function renderProdutoForm(produto, onSubmit) {
+function renderProdutoForm(produto, onSubmit) {
   const isEditing = !!produto;
   const formHtml = `
     <form id="produto-form" class="form">
@@ -220,4 +137,66 @@ export function renderProdutoForm(produto, onSubmit) {
     data.categoriaId = parseInt(data.categoriaId);
     onSubmit(data);
   });
+}
+
+// ─── Actions ────────────────────────────────────────────────────────────────
+
+function openCreateProduto() {
+  renderProdutoForm(null, async (formData) => {
+    try {
+      await ProdutosAPI.create(formData);
+      closeModal();
+      showToast('Produto criado com sucesso!');
+      await loadProdutos();
+    } catch (err) {
+      showToast(`Erro: ${err.message}`, 'error');
+    }
+  });
+}
+
+function openEditProduto(id, produtos) {
+  const produto = produtos.find((p) => p.id === id);
+  if (!produto) return;
+
+  renderProdutoForm(produto, async (formData) => {
+    try {
+      await ProdutosAPI.update(id, formData);
+      closeModal();
+      showToast('Produto atualizado com sucesso!');
+      await loadProdutos();
+    } catch (err) {
+      showToast(`Erro: ${err.message}`, 'error');
+    }
+  });
+}
+
+async function deleteProduto(id) {
+  if (!confirm('Tem certeza que deseja excluir este produto?')) return;
+  try {
+    await ProdutosAPI.delete(id);
+    showToast('Produto excluído com sucesso!');
+    await loadProdutos();
+  } catch (err) {
+    showToast(`Erro: ${err.message}`, 'error');
+  }
+}
+
+// ─── Loader ─────────────────────────────────────────────────────────────────
+
+/**
+ * Loads and renders the Produtos view.
+ */
+export async function loadProdutos() {
+  try {
+    const data = await ProdutosAPI.getAll();
+    // API returns array or a message object when empty
+    const produtos = Array.isArray(data) ? data : [];
+    renderProdutos(produtos, {
+      onCreate: () => openCreateProduto(),
+      onEdit: (id) => openEditProduto(id, produtos),
+      onDelete: (id) => deleteProduto(id),
+    });
+  } catch (err) {
+    renderError(`Erro ao carregar produtos: ${err.message}`);
+  }
 }

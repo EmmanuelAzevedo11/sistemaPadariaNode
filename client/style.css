@@ -215,6 +215,80 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   align-items: center;
 }
 
+/* ─── Landing Page ──────────────────────────────────────────────────────────── */
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.landing-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.landing-icon {
+  font-size: 64px;
+}
+
+.landing-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.5px;
+}
+
+.landing-subtitle {
+  font-size: 16px;
+  color: var(--color-text-muted);
+  max-width: 500px;
+}
+
+.landing-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.landing-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.landing-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+}
+
+.landing-card-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.landing-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.landing-card p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
 /* ─── Empty State ────────────────────────────────────────────────────────────── */
 .empty-state {
   display: flex;

@@ -5,7 +5,8 @@ export const buscarVendas = async () => {
     const listaVendas = await prisma.venda.findMany();
 
     if(listaVendas.length === 0 ){
-        throw new Error("Não existe vendas ainda");
+        // throw new Error("Não existe vendas ainda");
+        return [];
     }
 
     return listaVendas;
@@ -25,7 +26,7 @@ export const buscarVendaPorId = async (id: number) => {
     return venda;
 }
 
-export const criarVenda = async (valorTotalBruto: number,  valorTotalLiquido: number,  dataHoraVenda: Date, vendedorId: number, 
+export const criarVenda = async (valorTotalBruto: number,  valorTotalLiquido: number,  dataHoraVenda: string | Date, vendedorId: number, 
     clienteId: number, formaPagamentoId: number , descontoAplicado?: number, cpfNotaFiscal?: string,) => {
         
         if(!valorTotalBruto || !valorTotalLiquido || !dataHoraVenda || !vendedorId || !clienteId || !formaPagamentoId){
@@ -36,7 +37,7 @@ export const criarVenda = async (valorTotalBruto: number,  valorTotalLiquido: nu
             data: {
                 valorTotalBruto: valorTotalBruto,
                 valorTotalLiquido: valorTotalLiquido,
-                dataHoraVenda: dataHoraVenda,
+                dataHoraVenda: new Date(dataHoraVenda),
                 vendedor: {
                     connect: {id: Number(vendedorId)}
                 },
@@ -74,7 +75,7 @@ export const updateVendas = async (id: number, dados: any) => {
         data: {
             valorTotalBruto: valorTotalBruto,
             valorTotalLiquido: valorTotalLiquido,
-            dataHoraVenda: dataHoraVenda,
+            dataHoraVenda: dataHoraVenda ? new Date(dataHoraVenda) : undefined,
             vendedorId: vendedorId,
             clienteId: clienteId,
             formaPagamentoId: formaPagamentoId,
