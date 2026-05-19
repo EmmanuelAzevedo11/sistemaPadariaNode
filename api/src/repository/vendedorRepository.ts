@@ -94,7 +94,7 @@ export const deleteVendedor = async (id: number) => {
 
 //buscando vendedor por email
 export const buscarVendedorPorEmail = async (email: string) => {
-    const vendedor = await prisma.vendedor.findUnique({
+    const vendedor = await prisma.vendedor.findFirst({
         where: { email }
     });
 

@@ -11,6 +11,17 @@ import { loadClientes } from './src/views/clientes/clientesView.js';
 
 // ─── Router ─────────────────────────────────────────────────────────────────
 
+//função que vê se o usuário tem login
+function usuarioEstaAutenticado() {
+  const token = localStorage.getItem('@padaria:token');
+  if (!token) {
+    alert("Acesso negado! Por favor, faça login no sistema. 🔒");
+    window.location.href = './index.html'; // Redireciona para a tela de login externa
+    return false;
+  }
+  return true;
+}
+
 const routes = {
   dashboard: loadDashboard,
   produtos: loadProdutos,
@@ -21,6 +32,7 @@ const routes = {
 };
 
 async function navigate(view) {
+  if (!usuarioEstaAutenticado()) return;
   window.location.hash = view;
   setActiveNav(view);
   renderLoading();
@@ -31,6 +43,7 @@ async function navigate(view) {
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 function init() {
+  if (!usuarioEstaAutenticado()) return;
   // Sidebar navigation
   document.querySelectorAll('.nav__item').forEach((item) => {
     item.addEventListener('click', () => navigate(item.dataset.view));
