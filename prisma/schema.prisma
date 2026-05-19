@@ -10,8 +10,8 @@ datasource db {
 model Vendedor {
   id              Int      @id @default(autoincrement())
   nome            String   @db.VarChar(100)
-  cpf             String   @db.VarChar(14)
-  email           String   @db.VarChar(80)
+  cpf             String   @db.VarChar(14) 
+  email           String   @db.VarChar(80) @unique
   senhaHash       String   @db.VarChar(255)
   telefone        String   @db.VarChar(20)
   dataCadastro    DateTime @default(now())

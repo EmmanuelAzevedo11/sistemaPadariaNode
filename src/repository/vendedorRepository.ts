@@ -24,7 +24,19 @@ export const buscarVendedorPorId = async (id: number) => {
     return vendedor;
 }
 
-export const criarVendedor = async (nome: string, cpf: string, email: string, senhaHash, telefone: string, dataCadastro: Date) => {
+export const buscarVendedorPorEmail = async (email: string) => {
+    const vendedor = await prisma.vendedor.findUnique({
+        where: { email }
+    });
+
+    if(!vendedor){
+        throw new Error("Não existe esse vendedor");
+    }
+
+    return vendedor;
+}
+
+export const criarVendedor = async (nome: string, cpf: string, email: string, senhaHash: string, telefone: string, dataCadastro: Date) => {
 
     if(!nome && !cpf && !email && !senhaHash && !telefone && !dataCadastro){
         throw new Error('Dados não estão corretos');
