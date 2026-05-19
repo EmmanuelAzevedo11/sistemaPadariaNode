@@ -27,9 +27,10 @@ export const buscarVendedorPorId = async (id: number) => {
 
 export const criarVendedor = async (nome: string, cpf: string, email: string, senhaHash: string, telefone: string, dataCadastro: string | Date) => {
 
-    if(!nome && !cpf && !email && !senhaHash && !telefone && !dataCadastro){
+    if(!nome || !cpf || !email || !senhaHash || !telefone || !dataCadastro){
         throw new Error('Dados não estão corretos');
     }
+
 
     const vendedor = prisma.vendedor.create({
         data: {
@@ -89,4 +90,17 @@ export const deleteVendedor = async (id: number) => {
     });
 
     return true;
+}
+
+//buscando vendedor por email
+export const buscarVendedorPorEmail = async (email: string) => {
+    const vendedor = await prisma.vendedor.findUnique({
+        where: { email }
+    });
+
+    if(!vendedor){
+        throw new Error("Não existe esse vendedor");
+    }
+
+    return vendedor;
 }
