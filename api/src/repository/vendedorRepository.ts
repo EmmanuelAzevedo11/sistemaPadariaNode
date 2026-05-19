@@ -32,7 +32,7 @@ export const criarVendedor = async (nome: string, cpf: string, email: string, se
     }
 
 
-    const vendedor = prisma.vendedor.create({
+    const vendedor = await prisma.vendedor.create({
         data: {
             nome: nome,
             cpf: cpf, 
