@@ -1,4 +1,4 @@
-import { ProdutosAPI } from '../../api/index.js';
+import { ProdutosAPI, CategoriasAPI } from '../../api/index.js';
 import { openModal, closeModal } from '../shared/modal.js';
 import { renderError } from '../shared/layout.js';
 import { formatCurrency, truncate, showToast } from '../../utils.js';
@@ -86,7 +86,7 @@ function renderProdutos(produtos, { onEdit, onDelete, onCreate }) {
  * @param {object|null} produto - Existing product data for editing, or null for creation.
  * @param {Function} onSubmit - Called with the form data object on submission.
  */
-function renderProdutoForm(produto, onSubmit) {
+function renderProdutoForm(produto, categorias, onSubmit) {
   const isEditing = !!produto;
   const formHtml = `
     <form id="produto-form" class="form">
@@ -102,9 +102,15 @@ function renderProdutoForm(produto, onSubmit) {
             placeholder="Ex: PAO001" value="${isEditing ? produto.codigo : ''}" required />
         </div>
         <div class="form__group">
-          <label class="form__label" for="f-categoria">ID Categoria</label>
-          <input class="form__input" id="f-categoria" name="categoriaId" type="number"
-            placeholder="Ex: 1" value="${isEditing ? produto.categoriaId : ''}" required />
+          <label class="form__label" for="f-categoria">Categoria</label>
+          <select class="form__input" id="f-categoria" name="categoriaId" required>
+            <option value="" disabled ${!isEditing ? 'selected' : ''}>Selecione uma categoria...</option>
+            ${categorias.map(cat => `
+              <option value="${cat.id}" ${isEditing && produto.categoriaId === cat.id ? 'selected' : ''}>
+                ${cat.nomeCategoria}
+              </option>
+            `).join('')}
+          </select>
         </div>
       </div>
       <div class="form__row">
@@ -141,8 +147,12 @@ function renderProdutoForm(produto, onSubmit) {
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 
-function openCreateProduto() {
-  renderProdutoForm(null, async (formData) => {
+async function openCreateProduto() {
+  try {
+    const res = await CategoriasAPI.getAll();
+    const categorias = Array.isArray(res.categorias) ? res.categorias : [];
+
+    renderProdutoForm(null, categorias, async (formData) => {
     try {
       await ProdutosAPI.create(formData);
       closeModal();
@@ -152,13 +162,20 @@ function openCreateProduto() {
       showToast(`Erro: ${err.message}`, 'error');
     }
   });
+  } catch (err) {
+    showToast(`Erro ao carregar categorias: ${err.message}`, 'error');
+  }
 }
 
-function openEditProduto(id, produtos) {
+async function openEditProduto(id, produtos) {
   const produto = produtos.find((p) => p.id === id);
   if (!produto) return;
 
-  renderProdutoForm(produto, async (formData) => {
+  try {
+    const res = await CategoriasAPI.getAll();
+    const categorias = Array.isArray(res.categorias) ? res.categorias : [];
+
+    renderProdutoForm(produto, categorias, async (formData) => {
     try {
       await ProdutosAPI.update(id, formData);
       closeModal();
@@ -168,6 +185,9 @@ function openEditProduto(id, produtos) {
       showToast(`Erro: ${err.message}`, 'error');
     }
   });
+  } catch(err) {
+    showToast(`Erro ao carregar categorias: ${err.message}`, 'error');
+  }
 }
 
 async function deleteProduto(id) {
@@ -189,7 +209,6 @@ async function deleteProduto(id) {
 export async function loadProdutos() {
   try {
     const data = await ProdutosAPI.getAll();
-    // API returns array or a message object when empty
     const produtos = Array.isArray(data) ? data : [];
     renderProdutos(produtos, {
       onCreate: () => openCreateProduto(),

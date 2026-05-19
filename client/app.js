@@ -49,6 +49,9 @@ function init() {
     item.addEventListener('click', () => navigate(item.dataset.view));
   });
 
+  // Modal close button
+  document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+
   // Modal backdrop close
   document.getElementById('modal-overlay').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeModal();
