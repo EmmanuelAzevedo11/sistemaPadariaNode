@@ -3,6 +3,7 @@ import cors from 'cors';
 import produtosRoutes from './routes/produtosRoutes';
 import vendedorRoutes from './routes/vendedorRoutes';
 import vendasRoutes from './routes/vendasRoutes';
+import loginRoutes from './routes/loginRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { title } from 'node:process';
@@ -122,6 +123,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(produtosRoutes);
+app.use(loginRoutes);
 app.use(vendedorRoutes);
 app.use(vendasRoutes);
 app.use(clientesRoutes);

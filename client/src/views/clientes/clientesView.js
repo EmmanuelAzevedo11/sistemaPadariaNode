@@ -45,10 +45,9 @@ function renderClientes(clientes, { onEdit, onDelete, onCreate }) {
       <button class="btn btn--primary" id="btn-create-cliente">+ Novo Cliente</button>
     </div>
 
-    ${
-      clientes.length === 0
-        ? emptyState
-        : `
+    ${clientes.length === 0
+      ? emptyState
+      : `
       <div class="table-wrapper">
         <table class="table">
           <thead class="table__head">

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { buscarVedendores, buscarVendedorPorId, criarVendedor } from "../repository/vendedorRepository";
 import { updateProduto } from "../repository/produtosRepository";
+import bcrypt from "bcrypt";
 
 const route = Router();
 
@@ -43,7 +44,11 @@ route.post('/vendedor', async (req, res) => {
         const { id } = req.params;
         const {nome, cpf,email,  senhaHash, telefone, dataCadastro } = req.body;
         
-        const vendedor = await criarVendedor(nome,cpf,email,senhaHash,telefone,dataCadastro);
+        const saltos = 10;
+        const senhaCriptografada = await bcrypt.hash(senhaHash, saltos);
+        
+        const vendedor = await criarVendedor(nome,cpf,email,senhaCriptografada,telefone,dataCadastro);
+        
 
         return res.status(200).json({
             message: "Vendedor criado com sucesso",
@@ -78,6 +83,8 @@ route.put('/vendedor/:id', async (req, res) => {
         });
     }
 
-})
+});
+
+
 
 export default route;
