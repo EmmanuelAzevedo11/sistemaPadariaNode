@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { buscarVendaPorId, buscarVendas, criarVenda, deleteVenda, updateVendas } from "../repository/vendaRepository";
+import { buscarVendaPorId, buscarVendas, criarVenda, deleteVenda, retirarEstoqueItemVenda, updateVendas } from "../repository/vendaRepository";
+import { authMiddleware } from "../middleware/authMiddleware";
 
 const route = Router();
 
@@ -36,13 +37,20 @@ route.get('/venda/:id', async (req, res) => {
     }
 });
 
-route.post('/venda', async(req, res) => {
+route.post('/venda', authMiddleware, async (req, res) => {
     try {
-        const { valorTotalBruto , valorTotalLiquido  ,dataHoraVenda, vendedorId ,
-            clienteId ,formaPagamentoId, descontoAplicado = 0 , cpfNotaFiscal = undefined } = req.body;
+        const usuarioLogado = (req as any).user;
+        const vendedorId = usuarioLogado.id;
 
-        const vendaCriada = await criarVenda(valorTotalBruto,valorTotalLiquido,dataHoraVenda,vendedorId,clienteId,
-            formaPagamentoId,descontoAplicado, cpfNotaFiscal
+        const { 
+            valorTotalBruto, valorTotalLiquido, dataHoraVenda,
+            clienteId, formaPagamentoId, descontoAplicado = 0, 
+            cpfNotaFiscal = undefined, itens // <-- Adicionado aqui
+        } = req.body;
+
+        const vendaCriada = await criarVenda(
+            valorTotalBruto, valorTotalLiquido, dataHoraVenda, Number(vendedorId), clienteId,
+            formaPagamentoId, descontoAplicado, cpfNotaFiscal, itens // <-- Passado aqui
         );
 
         return res.status(201).json({
@@ -51,9 +59,7 @@ route.post('/venda', async(req, res) => {
         });
 
     } catch (error: any) {
-        return res.status(422).json({
-            message: error.message
-        });
+        return res.status(422).json({ message: error.message });
     }
 });
 
@@ -88,6 +94,22 @@ route.delete('/venda/:id', async (req, res) => {
         return res.status(400).json({
             message: error.message
         });
+    }
+});
+
+//essa rota serve para após a criação de venda o estoque seja descontado do produto
+
+route.patch('/venda/:id/finalizar-estoque', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        await retirarEstoqueItemVenda(Number(id));
+
+        return res.status(200).json({ 
+            message: "Estoque atualizado com sucesso para a venda!" 
+        });
+    } catch (error: any) {
+        return res.status(422).json({ message: error.message });
     }
 });
 

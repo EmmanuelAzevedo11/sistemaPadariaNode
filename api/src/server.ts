@@ -11,13 +11,15 @@ import clientesRoutes from './routes/clientesRoutes';
 import categoriasRoutes from './routes/categoriasRoutes';
 import formaPagamentoRoutes from './routes/formaPagamentoRoutes';
 import itemVendaRoutes from './routes/itemVendaRoutes';
+import dashboardRoutes from './routes/dashboard';
+
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors({
   origin: 'http://localhost:5500',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -130,6 +132,8 @@ app.use(clientesRoutes);
 app.use(categoriasRoutes);
 app.use(formaPagamentoRoutes);
 app.use(itemVendaRoutes);
+app.use(dashboardRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`🍞 Servidor rodando em http://localhost:${PORT}`);

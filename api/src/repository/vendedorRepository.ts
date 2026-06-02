@@ -54,7 +54,8 @@ export const updateVendedor = async (id: number, dados: any) => {
         throw new Error("Não existe esse vendedor");
     }
 
-    const {nome, cpf,email,  senhaHash, telefone, dataCadastro } = dados;
+    const {nome, cpf,email,  senhaHash, telefone } = dados;
+    const dataCadastro = new Date();
 
     if(!nome && !cpf && !email && !senhaHash && !telefone && !dataCadastro){
         throw new Error('Dados não estão corretos');
@@ -83,6 +84,14 @@ export const deleteVendedor = async (id: number) => {
         throw new Error("Não existe esse vendedor");
     }
 
+    const possuiVendas = await prisma.venda.findFirst({
+        where: { vendedorId: Number(id) }
+    });
+
+    if (possuiVendas) {
+        throw new Error("Este vendedor possui vendas vinculadas e não pode ser excluído.");
+    }
+    
     await prisma.vendedor.delete({
         where: {
             id: Number(id)

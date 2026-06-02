@@ -6,4 +6,5 @@ export const VendedorAPI = {
   getById: (id) => request(`/vendedor/${id}`),
   create: (body) => request('/vendedor', { method: 'POST', body: JSON.stringify(body) }),
   update: (id, body) => request(`/vendedor/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  delete: (id) => request(`/vendedor/${id}`, { method: 'DELETE' }),
 };
