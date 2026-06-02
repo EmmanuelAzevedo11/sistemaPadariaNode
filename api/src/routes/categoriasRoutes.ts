@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { response, Router } from "express";
 import { prisma } from "../lib/prisma";
 import { empty } from "@prisma/client/runtime/library";
 
@@ -91,7 +91,7 @@ route.post('/categorias', async (req, res) => {
     }
 });
 
-route.put('/produtos/:id', async (req, res) => {
+route.put('/categorias/:id', async (req, res) => {
     try {
         const { id } = await req.params;
         const {nomeCategoria, descricao} = await req.body;
@@ -129,7 +129,7 @@ route.put('/produtos/:id', async (req, res) => {
     }
 });
 
-route.delete('/produtos/:id', async (req, res) => {
+route.delete('/categorias/:id', async (req, res) => {
     try{
         const { id } = await req.params;
 
@@ -139,12 +139,35 @@ route.delete('/produtos/:id', async (req, res) => {
             });
         }
 
-        const { categoriaDeletada } = await prisma.categoria.delete({
+        const categoriaExiste  = await prisma.categoria.findUnique({
             where: {
                 id: Number(id)
             }
         });
 
+        if(!categoriaExiste){
+            throw new Error("Categoria não existe");
+        }
+
+        const produtosCategoria = await prisma.produto.findFirst({
+            where: {
+                categoriaId : Number(id)
+            }
+        });
+
+        if(produtosCategoria != null){
+            return res.status(404).json({
+                message: "A categoria não pode ser excluída pois tem produtos vinculados"
+            });
+        }
+
+        const categoriaDeletada = await prisma.categoria.delete({
+            where: {
+                id: Number(id)
+            }
+        });
+
+    
         return res.status(200).json({
             message: "Categoria deletada com sucesso",
             categoria: categoriaDeletada

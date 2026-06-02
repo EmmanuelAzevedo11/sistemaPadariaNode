@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { buscarVedendores, buscarVendedorPorId, criarVendedor } from "../repository/vendedorRepository";
+import { buscarVedendores, buscarVendedorPorId, criarVendedor, deleteVendedor } from "../repository/vendedorRepository";
 import { updateProduto } from "../repository/produtosRepository";
 import bcrypt from "bcrypt";
 
@@ -85,6 +85,23 @@ route.put('/vendedor/:id', async (req, res) => {
 
 });
 
+route.delete('/vendedor/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const vendedorExcluido = await deleteVendedor(id);
+
+        if(vendedorExcluido){
+            return res.status(200).json({
+                message: 'Vendedor excluido com sucesso',
+            });
+        }
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Erro ao excluir vendedor"
+        });
+    }
+})
 
 
 export default route;

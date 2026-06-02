@@ -83,6 +83,14 @@ export const deleteVendedor = async (id: number) => {
         throw new Error("Não existe esse vendedor");
     }
 
+    const possuiVendas = await prisma.venda.findFirst({
+        where: { vendedorId: Number(id) }
+    });
+
+    if (possuiVendas) {
+        throw new Error("Este vendedor possui vendas vinculadas e não pode ser excluído.");
+    }
+    
     await prisma.vendedor.delete({
         where: {
             id: Number(id)

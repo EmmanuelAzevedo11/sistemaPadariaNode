@@ -8,9 +8,27 @@ const BASE_URL = 'http://localhost:3000';
  */
 export async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
+
+  // 1. Busca o token que o login salvou no navegador
+  const token = localStorage.getItem('@padaria:token');
+
+  // 2. Monta os headers base
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  // 3. Se o token existir, coloca ele no cabeçalho de Autorização
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  // 4. Junta tudo garantindo que os headers do "options" não apaguem o token
   const config = {
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers: {
+      ...headers,
+      ...options.headers,
+    },
   };
 
   const response = await fetch(url, config);

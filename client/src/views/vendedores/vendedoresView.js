@@ -8,9 +8,9 @@ import { truncate, showToast } from '../../utils.js';
 /**
  * Renders the vendedores list view.
  * @param {Array} vendedores
- * @param {{ onEdit: Function, onCreate: Function }} callbacks
+ * @param {{ onEdit: Function, onCreate: Function, onDelete: Function }} callbacks
  */
-function renderVendedores(vendedores, { onEdit, onCreate }) {
+function renderVendedores(vendedores, { onEdit, onCreate, onDelete }) {
   const main = document.getElementById('main-content');
 
   const rows = vendedores.map(
@@ -23,6 +23,7 @@ function renderVendedores(vendedores, { onEdit, onCreate }) {
       <td class="table__cell">${v.telefone ?? '—'}</td>
       <td class="table__cell table__cell--actions">
         <button class="btn btn--sm btn--secondary" data-action="edit" data-id="${v.id}">Editar</button>
+        <button class="btn btn--sm btn--danger" data-action="delete" data-id="${v.id}">Excluir</button>
       </td>
     </tr>
   `
@@ -44,10 +45,9 @@ function renderVendedores(vendedores, { onEdit, onCreate }) {
       <button class="btn btn--primary" id="btn-create-vendedor">+ Novo Vendedor</button>
     </div>
 
-    ${
-      vendedores.length === 0
-        ? emptyState
-        : `
+    ${vendedores.length === 0
+      ? emptyState
+      : `
       <div class="table-wrapper">
         <table class="table">
           <thead class="table__head">
@@ -74,6 +74,7 @@ function renderVendedores(vendedores, { onEdit, onCreate }) {
     if (!btn) return;
     const id = Number(btn.dataset.id);
     if (btn.dataset.action === 'edit') onEdit(id);
+    if (btn.dataset.action === 'delete') onDelete(id);
   });
 }
 
@@ -168,6 +169,18 @@ function openEditVendedor(id, vendedores) {
   });
 }
 
+async function executarExclusaoVendedor(id) {
+  if (!confirm('Tem certeza que deseja excluir este Vendedor?')) return;
+  try {
+    await VendedorAPI.delete(id);
+    showToast('Vendedor excluído com sucesso!');
+    await loadVendedores();
+  } catch (err) {
+    showToast(`Erro: ${err.message}`, 'error');
+  }
+}
+
+
 // ─── Loader ─────────────────────────────────────────────────────────────────
 
 /**
@@ -180,6 +193,7 @@ export async function loadVendedores() {
     renderVendedores(vendedores, {
       onCreate: () => openCreateVendedor(),
       onEdit: (id) => openEditVendedor(id, vendedores),
+      onDelete: (id) => executarExclusaoVendedor(id),
     });
   } catch (err) {
     renderError(`Erro ao carregar vendedores: ${err.message}`);
