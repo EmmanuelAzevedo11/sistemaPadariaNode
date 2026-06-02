@@ -11,7 +11,8 @@ import clientesRoutes from './routes/clientesRoutes';
 import categoriasRoutes from './routes/categoriasRoutes';
 import formaPagamentoRoutes from './routes/formaPagamentoRoutes';
 import itemVendaRoutes from './routes/itemVendaRoutes';
-import dashRoutes from './routes/dashRoutes';
+import dashboardRoutes from './routes/dashboard';
+
 
 const app = express();
 const PORT = 3000;
@@ -131,7 +132,7 @@ app.use(clientesRoutes);
 app.use(categoriasRoutes);
 app.use(formaPagamentoRoutes);
 app.use(itemVendaRoutes);
-app.use(dashRoutes);
+app.use(dashboardRoutes);
 
 
 app.listen(PORT, () => {
