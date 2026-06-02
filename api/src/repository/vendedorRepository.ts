@@ -54,7 +54,8 @@ export const updateVendedor = async (id: number, dados: any) => {
         throw new Error("Não existe esse vendedor");
     }
 
-    const {nome, cpf,email,  senhaHash, telefone, dataCadastro } = dados;
+    const {nome, cpf,email,  senhaHash, telefone } = dados;
+    const dataCadastro = new Date();
 
     if(!nome && !cpf && !email && !senhaHash && !telefone && !dataCadastro){
         throw new Error('Dados não estão corretos');

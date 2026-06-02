@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { buscarVedendores, buscarVendedorPorId, criarVendedor, deleteVendedor } from "../repository/vendedorRepository";
+import { buscarVedendores, buscarVendedorPorId, criarVendedor, deleteVendedor, updateVendedor } from "../repository/vendedorRepository";
 import { updateProduto } from "../repository/produtosRepository";
 import bcrypt from "bcrypt";
 
@@ -42,10 +42,11 @@ route.get('/vendedor/:id', async (req, res) => {
 route.post('/vendedor', async (req, res) => {
     try{
         const { id } = req.params;
-        const {nome, cpf,email,  senhaHash, telefone, dataCadastro } = req.body;
+        const {nome, cpf,email,  senhaHash, telefone } = req.body;
         
         const saltos = 10;
         const senhaCriptografada = await bcrypt.hash(senhaHash, saltos);
+        const dataCadastro = new Date();
         
         const vendedor = await criarVendedor(nome,cpf,email,senhaCriptografada,telefone,dataCadastro);
         
@@ -69,11 +70,11 @@ route.put('/vendedor/:id', async (req, res) => {
 
         const { id } = req.params;
 
-        const produtoAtualizado = await updateProduto(Number(id), req.body);
+        const vendedorAtualizado = await updateVendedor(Number(id), req.body);
 
         return res.status(200).json({
-                message: "Produto atualizado com sucesso!",
-                produto: produtoAtualizado
+                message: "Vendedor atualizado com sucesso!",
+                vendedor: vendedorAtualizado
         });
         
     } catch (error: any) {

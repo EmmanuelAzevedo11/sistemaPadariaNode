@@ -107,11 +107,6 @@ function renderVendedorForm(vendedor, onSubmit) {
           <input class="form__input" id="f-telefone-vend" name="telefone" type="text"
             placeholder="Ex: (11) 99999-0000" value="${isEditing ? vendedor.telefone ?? '' : ''}" required />
         </div>
-        <div class="form__group">
-          <label class="form__label" for="f-data-cad-vend">Data Cadastro</label>
-          <input class="form__input" id="f-data-cad-vend" name="dataCadastro" type="datetime-local"
-            value="${isEditing && vendedor.dataCadastro ? vendedor.dataCadastro.slice(0, 16) : ''}" required />
-        </div>
       </div>
       ${!isEditing ? `
       <div class="form__group">
